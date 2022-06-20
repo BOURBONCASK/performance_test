@@ -219,6 +219,12 @@ if(PERFORMANCE_TEST_OPENDDS_ENABLED)
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
 
+# void
+option(PERFORMANCE_TEST_VOID_ENABLED "Require void to be available, fail otherwise" OFF)
+if(PERFORMANCE_TEST_VOID_ENABLED)
+  add_definitions(-DPERFORMANCE_TEST_VOID_ENABLED)
+endif()
+
 
 add_subdirectory(msg)
 include_directories(${IDLGEN_INCLUDE_DIR})
@@ -318,6 +324,10 @@ endif()
 
 if(PERFORMANCE_TEST_OPENDDS_ENABLED)
   list(APPEND sources src/communication_abstractions/opendds_communicator.hpp)
+endif()
+
+if(PERFORMANCE_TEST_VOID_ENABLED)
+  list(APPEND sources src/communication_abstractions/void_communicator.hpp)
 endif()
 
 include(ExternalProject)

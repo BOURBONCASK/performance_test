@@ -33,6 +33,10 @@
   #include "factories/rclcpp_waitset_data_runner_factory.hpp"
 #endif
 
+#ifdef PERFORMANCE_TEST_VOID_ENABLED
+  #include "../communication_abstractions/void_communicator.hpp"
+#endif
+
 #ifdef PERFORMANCE_TEST_APEX_OS_POLLING_SUBSCRIPTION_ENABLED
 #include "../communication_abstractions/apex_os_polling_subscription_communicator.hpp"
 #endif
@@ -211,6 +215,18 @@ std::shared_ptr<DataEntity> DataEntityFactory::get(
             case RunType::SUBSCRIBER:
               ptr = std::make_shared<DataSubscriber<OpenDDSCommunicator<T>>>(
                 stats);
+              break;
+          }
+        }
+#endif
+#ifdef PERFORMANCE_TEST_VOID_ENABLED
+        if (com_mean == CommunicationMean::VOID) {
+          switch (run_type) {
+            case RunType::PUBLISHER:
+              ptr = std::make_shared<DataPublisher<VoidCommunicator<T>>>(stats);
+              break;
+            case RunType::SUBSCRIBER:
+              ptr = std::make_shared<DataSubscriber<VoidCommunicator<T>>>(stats);
               break;
           }
         }

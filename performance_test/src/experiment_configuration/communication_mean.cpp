@@ -76,6 +76,11 @@ std::string to_string(const CommunicationMean cm)
     return "OpenDDS";
   }
 #endif
+#ifdef PERFORMANCE_TEST_VOID_ENABLED
+  if (cm == CommunicationMean::VOID) {
+    return "VOID";
+  }
+#endif
   throw std::invalid_argument("Enum value not supported!");
 }
 

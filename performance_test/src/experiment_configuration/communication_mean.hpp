@@ -59,6 +59,9 @@ enum class CommunicationMean
 #ifdef PERFORMANCE_TEST_OPENDDS_ENABLED
   OPENDDS,
 #endif
+#ifdef PERFORMANCE_TEST_VOID_ENABLED
+  VOID,
+#endif
   INVALID
 };
 

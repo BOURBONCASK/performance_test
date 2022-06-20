@@ -177,6 +177,9 @@ void ExperimentConfiguration::setup(int argc, char ** argv)
 #ifdef PERFORMANCE_TEST_OPENDDS_ENABLED
     allowedCommunications.push_back("OpenDDS");
 #endif
+#ifdef PERFORMANCE_TEST_VOID_ENABLED
+    allowedCommunications.push_back("VOID");
+#endif
     TCLAP::ValuesConstraint<std::string> allowedCommunicationVals(allowedCommunications);
     TCLAP::ValueArg<std::string> communicationArg("c", "communication",
       "The communication plugin to use. "
@@ -363,7 +366,11 @@ void ExperimentConfiguration::setup(int argc, char ** argv)
     }
 #endif
 #ifdef PERFORMANCE_TEST_RCLCPP_WAITSET_ENABLED
-    if (comm_str == "rclcpp-waitset") {
+    if (comm_str == "rclcpp-waitset") {      if (m_com_mean == CommunicationMean::VOID) {
+        if (m_number_of_publishers == 0 || m_number_of_subscribers == 0) {
+          throw std::invalid_argument("The VOID plugin is only available for intraprocess communication");
+        }
+      }
       m_com_mean = CommunicationMean::RCLCPP_WAITSET;
     }
 #endif
@@ -407,7 +414,14 @@ void ExperimentConfiguration::setup(int argc, char ** argv)
       m_com_mean = CommunicationMean::OPENDDS;
     }
 #endif
-
+#ifdef PERFORMANCE_TEST_VOID_ENABLED
+    if (comm_str == "VOID") {
+      m_com_mean = CommunicationMean::VOID;
+      #ifdef PERFORMANCE_TEST_ODB_FOR_SQL_ENABLED
+      m_com_mean_str = "VOID";
+      #endif
+    }
+#endif
     if (reliable_qos) {
       m_qos.reliability = QOSAbstraction::Reliability::RELIABLE;
       std::cout << "WARNING: The flag '--reliable' is deprecated.\n"
