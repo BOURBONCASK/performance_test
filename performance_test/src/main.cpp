@@ -33,9 +33,10 @@ int main(int argc, char ** argv)
 
   auto ec = parser.experiment_configuration;
 
-  if (ec.rt_config.is_rt_init_required()) {
-    pt::pre_proc_rt_init(ec.rt_config.cpus, ec.rt_config.prio);
-  }
+  // TODO (Sumanth.Nirmal) disable rt settings
+  // if (ec.rt_config.is_rt_init_required()) {
+  //   pt::pre_proc_rt_init(ec.rt_config.cpus, ec.rt_config.prio);
+  // }
 
   if (ec.prevent_cpu_idle) {
     pt::prevent_cpu_idle();
@@ -48,9 +49,10 @@ int main(int argc, char ** argv)
   {
     auto r = pt::RunnerFactory::get().create_runner(ec);
 
-    if (ec.rt_config.is_rt_init_required()) {
-      pt::post_proc_rt_init();
-    }
+    // TODO (Sumanth.Nirmal) disable rt settings
+    // if (ec.rt_config.is_rt_init_required()) {
+    //   pt::post_proc_rt_init();
+    // }
 
     r->run();
   }
