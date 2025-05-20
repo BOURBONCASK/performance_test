@@ -171,12 +171,17 @@ if(APEX_CERT)
 endif()
 
 
-# FastRTPS
+# FastDDS
 if(PERFORMANCE_TEST_FASTRTPS_ENABLED)
-  find_package(fastrtps_cmake_module QUIET REQUIRED)
-  find_package(FastRTPS QUIET REQUIRED)
+  if($ENV{ROS_DISTRO} MATCHES "rolling|kilted")
+    find_package(FastDDS QUIET REQUIRED)
+    list(APPEND PLUGIN_LIBRARIES ${FastDDS_LIBRARIES})
+  else()
+    find_package(fastrtps_cmake_module QUIET REQUIRED)
+    find_package(FastRTPS QUIET REQUIRED)
+    list(APPEND PLUGIN_LIBRARIES ${FastRTPS_LIBRARIES})
+  endif()
   add_definitions(-DPERFORMANCE_TEST_FASTRTPS_ENABLED)
-  list(APPEND PLUGIN_LIBRARIES ${FastRTPS_LIBRARIES})
 endif()
 
 
